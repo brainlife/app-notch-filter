@@ -259,25 +259,25 @@ def main():
 
     # Info message about notch filtering if applied
     dict_json_product['brainlife'].append({'type': 'info', 'msg': 'Notch filter was applied.'})
-    comments_notch = f"{config['param_notch_freqs_start']}Hz and its harmonics"
+    comments_notch = f"{config['param_freqs_start']}Hz and its harmonics"
 
     # Check for None parameters 
 
     # picks notch
-    if config['param_notch_picks'] == "":
+    if config['param_picks'] == "":
         config['param_notch_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
     # notch widths
-    if config['param_notch_widths'] == "":
+    if config['param_widths'] == "":
         config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
     # iir parameters
-    if config['param_notch_iir_parameters'] == "":
-        config['param_notch_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+    if config['param_iir_parameters'] == "":
+        config['param_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
     # mt bandwidth
-    if config['param_notch_mt_bandwidth'] == "":
-        config['param_notch_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''         
+    if config['param_mt_bandwidth'] == "":
+        config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''         
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

@@ -11,7 +11,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
                  param_filter_length, param_widths, param_trans_bandwidth, param_n_jobs,
                  param_method, param_iir_parameters, param_mt_bandwidth, param_p_value,
                  param_phase, param_fir_window, param_fir_design, param_pad):
-    """Perform filtering using MNE Python and save the file once filtered.
+    """Apply a notch filter using MNE Python and save the file once filtered.
 
     Parameters
     ----------

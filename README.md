@@ -10,9 +10,10 @@ This is a draft of a future Brainlife App that notch filters MEG signals using t
 3) Input file is:
     * a MEG file in `.fif` format,
 4) Input parameters are:
-    * freqs_start: `int`, frequency to notch filter in Hz. Default is 50.
-    * freqs_end: `int`, end of the interval (in Hz) of the power lines harmonics to notch filter (this value is excluded). Default is 251.  
-    * freqs_step: `int`, The step in Hz to filter power lines harmonics between param_notch_freqs_start and param_notch_freqs_end. Default is 50.
+    * param_freqs_specific_or_start: `float`, optional, frequency to notch filter in Hz. Default is 50.
+    * freqs_end: `float`, optional, end of the interval of frequencies to filter out in Hz. This value is excluded. Default is 251.  
+    * freqs_step: `float`, optional, the step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
+        between param_freqs_start and param_freqs_end. Default is 50.
     * picks: `str`or `list`, optional, channels to include. Default is `None`. 
     * filter_length: `str`, length of the FIR filter to use in human-readable time units. Default is `auto`. 
     * widths: `float`, optional, width of the stop band in Hz. Default is `None`.

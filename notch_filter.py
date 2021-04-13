@@ -18,7 +18,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     param_freqs_specific_or_start: int or None
         Specific frequency to filter out in Hz or the start of the frequencies to filter out in Hz.
     param_freqs_end: int or None
-        End of the drequencies to filter out in Hz. This value is excluded. 
+        End of the interval of frequencies to filter out in Hz. This value is excluded. 
     param_freqs_step: int or None
         The step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
         between param_freqs_start and param_freqs_end.

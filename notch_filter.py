@@ -3,95 +3,52 @@
 import json
 import mne
 import numpy as np
+import os 
 
 
-def temporal_filtering(raw, param_filter_l_freq, param_filter_h_freq, param_filter_picks, param_filter_length,
-                       param_filter_l_trans_bandwidth, param_filter_h_trans_bandwidth, param_filter_n_jobs,
-                       param_filter_method, param_filter_iir_params, param_filter_phase, param_filter_fir_window,
-                       param_filter_fir_design, param_filter_skip_by_annotation, param_filter_pad, param_apply_notch,
-                       param_notch_freqs_start, param_notch_freqs_end, param_notch_freqs_step, param_notch_picks,
-                       param_notch_filter_length, param_notch_widths, param_notch_trans_bandwidth, param_notch_n_jobs,
-                       param_notch_method, param_notch_iir_parameters, param_notch_mt_bandwidth, param_notch_p_value,
-                       param_notch_phase, param_notch_fir_window, param_notch_fir_design, param_notch_pad):
+def notch_filter(raw, param_freqs_start, param_freqs_end, param_freqs_step, param_picks,
+                 param_filter_length, param_widths, param_trans_bandwidth, param_n_jobs,
+                 param_method, param_iir_parameters, param_mt_bandwidth, param_p_value,
+                 param_phase, param_fir_window, param_fir_design, param_pad):
     """Perform filtering using MNE Python and save the file once filtered.
 
     Parameters
     ----------
-    raw: instance of mne.io.Raw
-        Data to be filtered.
-    param_filter_l_freq: float or None
-        For FIR filters, the lower pass-band edge; for IIR filters, the lower cutoff frequency. If None the 
-        data are only low-passed.
-    param_filter_h_freq: float or None
-        For FIR filters, the upper pass-band edge; for IIR filters, the upper cutoff frequency. If None the 
-        data are only high-passed.
-    param_filter_picks: str, list, or None
+    param_freqs_start: int
+        Frequency to notch filter in Hz.
+    param_freqs_end: int
+        End of the interval (in Hz) of the power lines harmonics to notch filter. This value is excluded.
+    param_freqs_step: int
+        The step in Hz to filter power lines harmonics between param_notch_freqs_start and param_notch_freqs_end.
+    param_picks: list, or None
         Channels to include.
     param_filter_length: str
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
-        e.g., “10s” or “5500ms”). 
-    param_filter_l_trans_bandwidth: float or str
-        Width of the transition band at the low cut-off frequency in Hz (high pass or cutoff 1 in bandpass). 
-        Can be “auto” (default) to use a multiple of l_freq.     
-    param_filter_h_trans_bandwidth: float or str   
-        Width of the transition band at the high cut-off frequency in Hz (low pass or cutoff 2 in bandpass). 
-        Can be “auto” (default) to use a multiple of h_freq.
-    param_filter_n_jobs: int
-        Number of jobs to run in parallel.
-    param_filter_method: str
-        ‘fir’ will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt).
-    param_filter_iir_params: dict or None
-        Dictionary of parameters to use for IIR filtering. If iir_params is None and method=”iir”, 
-        4th order Butterworth will be used. 
-    param_filter_phase: str
-        Phase of the filter, only used if method='fir'. Either 'zero' or 'zero-double'.
-    param_filter_fir_window: str
-        The window to use in FIR design, can be “hamming” (default), “hann” (default in 0.13), or “blackman”.
-    param_filter_fir_design: str
-        Can be “firwin” (default) or “firwin2”.
-    param_filter_skip_by_annotation: str or list of str
-        If a string (or list of str), any annotation segment that begins with the given string will not be included in
-        filtering, and segments on either side of the given excluded annotated segment will be filtered separately.
-    param_filter_pad: str
-        The type of padding to use. Supports all numpy.pad() mode options. Can also be “reflect_limited” (default).
-    param_apply_notch: bool
-        If True apply a notch filter.
-    param_notch_freqs_start: int
-        Frequency to notch filter in Hz.
-    param_notch_freqs_end: int
-        End of the interval (in Hz) of the power lines harmonics to notch filter. This value is excluded.
-    param_notch_freqs_step: int
-        The step in Hz to filter power lines harmonics between param_notch_freqs_start and param_notch_freqs_end.
-    param_notch_picks: list, or None
-        Channels to include.
-    param_notch_filter_length: str
-        Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
-        on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
         e.g., “10s” or “5500ms”. 
-    param_notch_widths: float or None
+    param_widths: float or None
         Width of the stop band in Hz. If None, freqs / 200 is used.
-    param_notch_trans_bandwidth: float
+    param_trans_bandwidth: float
         Width of the transition band in Hz. 
-    param_notch_n_jobs: int
+    param_n_jobs: int
         Number of jobs to run in parallel.
-    param_notch_method: str
+    param_method: str
         ‘fir’ will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt). 
-    param_notch_iir_parameters: dict or None
+    param_iir_parameters: dict or None
         Dictionary of parameters to use for IIR filtering. If iir_params is None and method=”iir”, 
         4th order Butterworth will be used.
-    param_notch_mt_bandwidth: float or None
+    param_mt_bandwidth: float or None
         The bandwidth of the multitaper windowing function in Hz.
-    param_notch_p_value: float
+    param_p_value: float
         P-value to use in F-test thresholding to determine significant sinusoidal components 
         to remove when method=’spectrum_fit’ and freqs=None.
-    param_notch_phase: str
+    param_phase: str
         Phase of the filter, only used if method='fir'. Either 'zero' or 'zero-double'.
-    param_notch_fir_window: str
+    param_fir_window: str
         The window to use in FIR design, can be “hamming” (default), “hann”, or “blackman”.
-    param_notch_fir_design: str
+    param_fir_design: str
         Can be “firwin” (default) or “firwin2”.
-    param_notch_pad: str
+    param_pad: str
         The type of padding to use. Supports all numpy.pad() mode options. Can also be “reflect_limited” (default).
 
     Returns
@@ -102,30 +59,20 @@ def temporal_filtering(raw, param_filter_l_freq, param_filter_h_freq, param_filt
 
     raw.load_data()
 
-    # Bandpass, lowpass, or highpass filter
-    raw_filtered = raw.filter(l_freq=param_filter_l_freq, h_freq=param_filter_h_freq, 
-                              picks=param_filter_picks, filter_length=param_filter_length,
-                              l_trans_bandwidth=param_filter_l_trans_bandwidth,
-                              h_trans_bandwidth=param_filter_h_trans_bandwidth, n_jobs=param_filter_n_jobs,
-                              method=param_filter_method, iir_params=param_filter_iir_params, phase=param_filter_phase,
-                              fir_window=param_filter_fir_window, fir_design=param_filter_fir_design,
-                              skip_by_annotation=param_filter_skip_by_annotation, pad=param_filter_pad)
-
     # Notch
-    if param_apply_notch is True:
-        freqs = np.arange(param_notch_freqs_start, param_notch_freqs_end, param_notch_freqs_step)
-        raw_filtered.notch_filter(freqs=freqs, picks=param_notch_picks,
-                                  filter_length=param_notch_filter_length, notch_widths=param_notch_widths,
-                                  trans_bandwidth=param_notch_trans_bandwidth, n_jobs=param_notch_n_jobs,
-                                  method=param_notch_method, iir_params=param_notch_iir_parameters,
-                                  mt_bandwidth=param_notch_mt_bandwidth, p_value=param_notch_p_value,
-                                  phase=param_notch_phase, fir_window=param_notch_fir_window,
-                                  fir_design=param_notch_fir_design, pad=param_notch_pad)
+    freqs = np.arange(param_freqs_start, param_freqs_end, param_freqs_step)
+    raw_notch_filtered = raw.notch_filter(freqs=freqs, picks=param_picks,
+                              filter_length=param_filter_length, notch_widths=param_widths,
+                              trans_bandwidth=param_trans_bandwidth, n_jobs=param_n_jobs,
+                              method=param_method, iir_params=param_iir_parameters,
+                              mt_bandwidth=param_mt_bandwidth, p_value=param_p_value,
+                              phase=param_phase, fir_window=param_fir_window,
+                              fir_design=param_fir_design, pad=param_pad)
 
     # Save file
-    raw.save("out_dir_temporal_filtering/meg.fif", overwrite=True)
+    raw_notch_filtered.save("out_dir_notch_filter/meg.fif", overwrite=True)
 
-    return raw_filtered
+    return raw_notch_filtered
 
 
 def _compute_snr(meg_file):
@@ -304,75 +251,32 @@ def main():
     data_file = config.pop('fif')
     raw = mne.io.read_raw_fif(data_file, allow_maxshield=True)
 
-    # Check for None parameters for lowpass, highpass, or band pass filter
-    
-    # l_freq
-    if config['param_filter_l_freq'] == "":
-        config['param_filter_l_freq'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-    
-    # h_freq
-    if config['param_filter_h_freq'] == "":
-        config['param_filter_h_freq'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-
-    # picks
-    if config['param_filter_picks'] == "":
-        config['param_filter_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-
-    # iir parameters
-    if config['param_filter_iir_params'] == "":
-        config['param_filter_iir_params'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-
-    # Info message about filtering
-
-    # Band pass filter
-    if config['param_filter_l_freq'] is not None and config['param_filter_h_freq'] is not None:
-        comments_about_filtering = f'Data was filtered between ' \
-                                   f'{config["param_filter_l_freq"]} ' \
-                                   f'and {config["param_filter_h_freq"]}Hz'
-        dict_json_product['brainlife'].append({'type': 'info', 'msg': comments_about_filtering})
-
-    # Lowpass filter
-    elif config['param_filter_l_freq'] is None and config['param_filter_h_freq'] is not None:
-        comments_about_filtering = f'Lowpass filter was applied at {config["param_filter_h_freq"]}Hz'
-        dict_json_product['brainlife'].append({'type': 'info', 'msg': comments_about_filtering})
-
-    # Highpass filter
-    elif config['param_filter_l_freq'] is not None and config['param_filter_h_freq'] is None:
-        comments_about_filtering = f'Highpass filter was applied at {config["param_filter_l_freq"]}Hz'
-        dict_json_product['brainlife'].append({'type': 'info', 'msg': comments_about_filtering})
-
-    # Raise an exception if both param_filter_l_freq and param_filter_h_freq are None
-    elif config['param_filter_l_freq'] is None and config["param_filter_h_freq"] is None:
-        value_error_message = f'You must specify a value for param_filter_l_freq or param_filter_h_freq, ' \
-                              f"they can't both be set to None"
-        # Raise exception
-        raise ValueError(value_error_message)
+    # Read events file 
+    events_file = config.pop('events')
+    if os.path.exists(events_file) is True:
+        shutil.copy2(events_file, 'out_dir_notch_filter/events.tsv')  # required to run a pipeline on BL
 
     # Info message about notch filtering if applied
-    if config['param_apply_notch'] is True:
-        dict_json_product['brainlife'].append({'type': 'info', 'msg': 'Notch filter was applied.'})
-        comments_notch = f"{config['param_notch_freqs_start']}Hz and its harmonics"
+    dict_json_product['brainlife'].append({'type': 'info', 'msg': 'Notch filter was applied.'})
+    comments_notch = f"{config['param_notch_freqs_start']}Hz and its harmonics"
 
-        # Check for None parameters 
+    # Check for None parameters 
 
-        # picks notch
-        if config['param_notch_picks'] == "":
-            config['param_notch_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+    # picks notch
+    if config['param_notch_picks'] == "":
+        config['param_notch_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
-        # notch widths
-        if config['param_notch_widths'] == "":
-            config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+    # notch widths
+    if config['param_notch_widths'] == "":
+        config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
-        # iir parameters
-        if config['param_notch_iir_parameters'] == "":
-            config['param_notch_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+    # iir parameters
+    if config['param_notch_iir_parameters'] == "":
+        config['param_notch_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
-        # mt bandwidth
-        if config['param_notch_mt_bandwidth'] == "":
-            config['param_notch_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''         
-
-    else:
-        comments_notch = 'No Notch filter was applied'
+    # mt bandwidth
+    if config['param_notch_mt_bandwidth'] == "":
+        config['param_notch_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''         
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']
@@ -385,19 +289,19 @@ def main():
 
     # Apply temporal filtering
     raw_copy = raw.copy()
-    raw_filtered = temporal_filtering(raw_copy, **kwargs)
+    raw_notch_filtered = notch_filter(raw_copy, **kwargs)
     del raw_copy
 
     # Success message in product.json    
-    dict_json_product['brainlife'].append({'type': 'success', 'msg': 'Filtering was applied successfully.'})
+    dict_json_product['brainlife'].append({'type': 'success', 'msg': 'Notch filter was applied successfully.'})
 
     # Compute SNR
-    snr_before = _compute_snr(raw)
-    snr_after = _compute_snr(raw_filtered)
+    # snr_before = _compute_snr(raw)
+    # snr_after = _compute_snr(raw_filtered)
 
     # Generate a report
-    _generate_report(data_file, raw, raw_filtered, bad_channels, comments_about_filtering,
-                     comments_notch, snr_before, snr_after)
+    # _generate_report(data_file, raw, raw_filtered, bad_channels, comments_about_filtering,
+    #                  comments_notch, snr_before, snr_after)
 
     # Save the dict_json_product in a json file
     with open('product.json', 'w') as outfile:

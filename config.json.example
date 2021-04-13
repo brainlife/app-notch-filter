@@ -1,0 +1,20 @@
+{
+    "fif": "/network/lustre/iss01/home/aurore.bussalb/Repositories/app-maxfilter/out_dir_maxfilter/meg.fif",
+	"events": "/network/lustre/iss01/home/aurore.bussalb/Repositories/app-create-events/out_dir_create_events/events.tsv",
+    "param_freqs_start": 50,
+	"param_freqs_end": 251,
+	"param_freqs_step": 50,
+	"param_picks": null,
+	"param_filter_length": "auto",
+	"param_widths": null,
+	"param_trans_bandwidth": 1.0,
+	"param_n_jobs": 1,
+	"param_method": "fir",
+	"param_iir_parameters": null,
+	"param_mt_bandwidth": null,
+	"param_p_value": 0.05,
+	"param_phase": "zero",
+	"param_fir_window": "hamming",
+	"param_fir_design": "firwin",
+	"param_pad": "reflect_limited"
+}

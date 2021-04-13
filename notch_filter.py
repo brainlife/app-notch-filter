@@ -3,7 +3,8 @@
 import json
 import mne
 import numpy as np
-import os 
+import os
+import shutil
 
 
 def notch_filter(raw, param_freqs_start, param_freqs_end, param_freqs_step, param_picks,

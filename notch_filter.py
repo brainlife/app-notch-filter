@@ -272,7 +272,7 @@ def main():
     # freqs specific or start
     if config['param_freqs_specific_or_start'] == "":
         config['param_freqs_specific_or_starts'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-        if config['param_method'] != 'spectrum_fit'
+        if config['param_method'] != 'spectrum_fit':
             value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
             # Raise exception
             raise ValueError(value_error_message)

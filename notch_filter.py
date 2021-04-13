@@ -7,7 +7,7 @@ import os
 import shutil
 
 
-def notch_filter(raw, param_freqs_start, param_freqs_end, param_freqs_step, param_picks,
+def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freqs_step, param_picks,
                  param_filter_length, param_widths, param_trans_bandwidth, param_n_jobs,
                  param_method, param_iir_parameters, param_mt_bandwidth, param_p_value,
                  param_phase, param_fir_window, param_fir_design, param_pad):
@@ -15,12 +15,13 @@ def notch_filter(raw, param_freqs_start, param_freqs_end, param_freqs_step, para
 
     Parameters
     ----------
-    param_freqs_start: int
-        Frequency to notch filter in Hz.
-    param_freqs_end: int
-        End of the interval (in Hz) of the power lines harmonics to notch filter. This value is excluded.
-    param_freqs_step: int
-        The step in Hz to filter power lines harmonics between param_notch_freqs_start and param_notch_freqs_end.
+    param_freqs_specific_or_start: int or None
+        Specific frequency to filter out in Hz or the start of the frequencies to filter out in Hz.
+    param_freqs_end: int or None
+        End of the drequencies to filter out in Hz. This value is excluded. 
+    param_freqs_step: int or None
+        The step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
+        between param_freqs_start and param_freqs_end.
     param_picks: list, or None
         Channels to include.
     param_filter_length: str
@@ -60,15 +61,20 @@ def notch_filter(raw, param_freqs_start, param_freqs_end, param_freqs_step, para
 
     raw.load_data()
 
-    # Notch
-    freqs = np.arange(param_freqs_start, param_freqs_end, param_freqs_step)
+    # Notch between two frequencies
+    if param_freqs_end is not None:
+        freqs = np.arange(param_freqs_specific_or_start, param_freqs_end, param_freqs_step)
+    # Notch one frequency
+    else:
+        freqs = param_freqs_specific_or_start
+
     raw_notch_filtered = raw.notch_filter(freqs=freqs, picks=param_picks,
-                              filter_length=param_filter_length, notch_widths=param_widths,
-                              trans_bandwidth=param_trans_bandwidth, n_jobs=param_n_jobs,
-                              method=param_method, iir_params=param_iir_parameters,
-                              mt_bandwidth=param_mt_bandwidth, p_value=param_p_value,
-                              phase=param_phase, fir_window=param_fir_window,
-                              fir_design=param_fir_design, pad=param_pad)
+                                          filter_length=param_filter_length, notch_widths=param_widths,
+                                          trans_bandwidth=param_trans_bandwidth, n_jobs=param_n_jobs,
+                                          method=param_method, iir_params=param_iir_parameters,
+                                          mt_bandwidth=param_mt_bandwidth, p_value=param_p_value,
+                                          phase=param_phase, fir_window=param_fir_window,
+                                          fir_design=param_fir_design, pad=param_pad)
 
     # Save file
     raw_notch_filtered.save("out_dir_notch_filter/meg.fif", overwrite=True)
@@ -257,11 +263,27 @@ def main():
     if os.path.exists(events_file) is True:
         shutil.copy2(events_file, 'out_dir_notch_filter/events.tsv')  # required to run a pipeline on BL
 
-    # Info message about notch filtering if applied
+    # Info message 
     dict_json_product['brainlife'].append({'type': 'info', 'msg': 'Notch filter was applied.'})
     comments_notch = f"{config['param_freqs_start']}Hz and its harmonics"
 
     # Check for None parameters 
+
+    # freqs specific or start
+    if config['param_freqs_specific_or_start'] == "":
+        config['param_freqs_specific_or_starts'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+        if config['param_method'] != 'spectrum_fit'
+            value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
+            # Raise exception
+            raise ValueError(value_error_message)
+
+    # freqs end
+    if config['param_freqs_end'] == "":
+        config['param_freqs_end'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+
+    # freqs step
+    if config['param_freqs_step'] == "":
+        config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to ''   
 
     # picks notch
     if config['param_picks'] == "":

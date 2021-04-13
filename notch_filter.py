@@ -263,10 +263,6 @@ def main():
     if os.path.exists(events_file) is True:
         shutil.copy2(events_file, 'out_dir_notch_filter/events.tsv')  # required to run a pipeline on BL
 
-    # Info message 
-    dict_json_product['brainlife'].append({'type': 'info', 'msg': 'Notch filter was applied.'})
-    comments_notch = f"{config['param_freqs_start']}Hz and its harmonics"
-
     # Check for None parameters 
 
     # freqs specific or start
@@ -283,7 +279,7 @@ def main():
 
     # freqs step
     if config['param_freqs_step'] == "":
-        config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to ''   
+        config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to '' 
 
     # picks notch
     if config['param_picks'] == "":
@@ -299,7 +295,16 @@ def main():
 
     # mt bandwidth
     if config['param_mt_bandwidth'] == "":
-        config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''         
+        config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''    
+
+    # Comments messages
+    if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:
+        comments_notch = f"{config['param_freqs_specific_or_start']}Hz" 
+    elif config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is not None:  
+        comments_notch = f"Between {config['param_freqs_specific_or_start']} and {config['param_freqs_end']}Hz"
+        if config['param_freqs_step'] is not None:  
+            comments_notch = f"Between {config['param_freqs_specific_or_start']} and " \
+                             f"{config['param_freqs_end']}Hz every {config['param_freqs_step']}Hz"
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

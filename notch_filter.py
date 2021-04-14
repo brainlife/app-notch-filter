@@ -15,38 +15,38 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
 
     Parameters
     ----------
-    param_freqs_specific_or_start: int or None
+    param_freqs_specific_or_start: float or None
         Specific frequency to filter out in Hz or the start of the frequencies to filter out in Hz.
-    param_freqs_end: int or None
+    param_freqs_end: float or None
         End of the interval of frequencies to filter out in Hz. This value is excluded. 
-    param_freqs_step: int or None
+    param_freqs_step: float or None
         The step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
         between param_freqs_start and param_freqs_end.
     param_picks: list, or None
-        Channels to include.
+        Channels to include. Default is None.
     param_filter_length: str
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
         e.g., “10s” or “5500ms”. 
     param_widths: float or None
-        Width of the stop band in Hz. If None, freqs / 200 is used.
+        Width of the stop band in Hz. If None, freqs / 200 is used. Default is None.
     param_trans_bandwidth: float
-        Width of the transition band in Hz. 
+        Width of the transition band in Hz. Default is 1.
     param_n_jobs: int
-        Number of jobs to run in parallel.
+        Number of jobs to run in parallel. Default is 1.
     param_method: str
-        ‘fir’ will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt).
+        ‘fir’ (default) will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt).
         Can be ‘spectrum_fit’. 
     param_iir_parameters: dict or None
         Dictionary of parameters to use for IIR filtering. If iir_params is None and method=”iir”, 
-        4th order Butterworth will be used.
+        4th order Butterworth will be used. Default is None.
     param_mt_bandwidth: float or None
-        The bandwidth of the multitaper windowing function in Hz.
+        The bandwidth of the multitaper windowing function in Hz. Default is None.
     param_p_value: float
         P-value to use in F-test thresholding to determine significant sinusoidal components 
-        to remove when method=’spectrum_fit’ and freqs=None.
+        to remove when method=’spectrum_fit’ and freqs=None. Default is 0.05.
     param_phase: str
-        Phase of the filter, only used if method='fir'. Either 'zero' or 'zero-double'.
+        Phase of the filter, only used if method='fir'. Either 'zero' (default) or 'zero-double'.
     param_fir_window: str
         The window to use in FIR design, can be “hamming” (default), “hann”, or “blackman”.
     param_fir_design: str
@@ -304,11 +304,11 @@ def main():
 
     # picks notch
     if config['param_picks'] == "":
-        config['param_notch_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+        config['param_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
     # notch widths
     if config['param_widths'] == "":
-        config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+        config['param_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
     # iir parameters
     if config['param_iir_parameters'] == "":

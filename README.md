@@ -6,9 +6,14 @@ This is a draft of a future Brainlife App that notch filters MEG signals using t
 # app-notch-filter documentation
 
 1) Filter MEG signals
-2) First, apply a bandpass, highpass, or lowpass filter, then optionally apply a notch filter and resample the data  
+2) Apply a notch filter  
 3) Input file is:
     * a MEG file in `.fif` format,
+    * an optional fine calibration file in `.dat`,
+    * an optional crosstalk compensation file in `.fif`,
+    * an optional head position file in `.pos`,
+    * an optional destination file in `.fif`,
+    * an optional event file in `.tsv`.
 4) Input parameters are:
     * param_freqs_specific_or_start: `float`, optional, frequency to notch filter in Hz. Default is 50.
     * param_freqs_end: `float`, optional, end of the interval of frequencies to filter out in Hz. This value is excluded. Default is 251.  
@@ -32,7 +37,7 @@ This is a draft of a future Brainlife App that notch filters MEG signals using t
 This list along with the parameters' default values correspond to the 0.22.0 version of MNE Python.  
 
 5) Ouput files are:
-    * a `.fif` MEG file after filtering,
+    * a `.fif` MEG file after notch filtering,
     * an `.html` report containing figures.
 
 ### Authors

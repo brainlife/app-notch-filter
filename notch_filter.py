@@ -35,7 +35,8 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     param_n_jobs: int
         Number of jobs to run in parallel.
     param_method: str
-        ‘fir’ will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt). 
+        ‘fir’ will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt).
+        Can be ‘spectrum_fit’. 
     param_iir_parameters: dict or None
         Dictionary of parameters to use for IIR filtering. If iir_params is None and method=”iir”, 
         4th order Butterworth will be used.
@@ -257,6 +258,26 @@ def main():
     # Read the files
     data_file = config.pop('fif')
     raw = mne.io.read_raw_fif(data_file, allow_maxshield=True)
+
+    # Read the crosstalk file
+    cross_talk_file = config.pop('crosstalk')
+    if os.path.exists(cross_talk_file) is True:
+        shutil.copy2(cross_talk_file, 'out_dir_notch_filter/crosstalk_meg.fif')  # required to run a pipeline on BL
+
+    # Read the calibration file
+    calibration_file = config.pop('calibration')
+    if os.path.exists(calibration_file) is True:
+        shutil.copy2(calibration_file, 'out_dir_notch_filter/calibration_meg.dat')  # required to run a pipeline on BL
+
+    # Read destination file 
+    destination_file = config.pop('destination')
+    if os.path.exists(destination_file) is True:
+        shutil.copy2(destination_file, 'out_dir_notch_filter/destination.fif')  # required to run a pipeline on BL
+
+    # Read head pos file
+    head_pos = config.pop('headshape')
+    if os.path.exists(head_pos) is True:
+        shutil.copy2(head_pos, 'out_dir_notch_filter/headshape.pos')  # required to run a pipeline on BL
 
     # Read events file 
     events_file = config.pop('events')

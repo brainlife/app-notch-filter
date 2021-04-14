@@ -1,6 +1,10 @@
 {
     "fif": "/network/lustre/iss01/home/aurore.bussalb/Repositories/app-bad-channels/out_dir_bad_channels/meg.fif",
+    "calibration": "/network/lustre/iss01/home/aurore.bussalb/Repositories/data_test_BL/sss_cal.dat",
+    "crosstalk": "/network/lustre/iss01/home/aurore.bussalb/Repositories/data_test_BL/ct_sparse.fif",
+    "destination": "/network/lustre/iss01/home/aurore.bussalb/Repositories/data_test_BL/mean_tm-raw.fif",
 	"events": "/network/lustre/iss01/home/aurore.bussalb/Repositories/app-create-events/out_dir_create_events/events.tsv",
+    "headshape": "",
     "param_freqs_specific_or_start": 50,
 	"param_freqs_end": 251,
 	"param_freqs_step": 50,

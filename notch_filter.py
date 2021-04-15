@@ -15,6 +15,8 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
 
     Parameters
     ----------
+    raw: instance of mne.io.Raw
+        Data to be filtered.
     param_freqs_specific_or_start: float or None
         Specific frequency to filter out in Hz or the start of the frequencies to filter out in Hz.
     param_freqs_end: float or None

@@ -73,17 +73,17 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     raw.load_data()
 
     # Raise error if both param picks are not None
-    if config['param_picks_by_channel_types_or_names'] is not None and config['param_picks_by_channel_indices'] is not None:
+    if param_picks_by_channel_types_or_names is not None and param_picks_by_channel_indices is not None:
         value_error_message = f"You can't provide values for both " \
                               f"param_picks_by_channel_types_or_names and " \
                               f"param_picks_by_channel_indices. one of them must be " \
                               f"set to None."
         raise ValueError(value_error_message)
     # Define param_picks
-    elif config['param_picks_by_channel_types_or_names'] is None and config['param_picks_by_channel_indices'] is not None:
-        param_picks = config['param_picks_by_channel_indices']
-    elif config['param_picks_by_channel_types_or_names'] is not None and config['param_picks_by_channel_indices'] is None:
-        param_picks = config['param_picks_by_channel_types_or_names']
+    elif param_picks_by_channel_types_or_names is None and param_picks_by_channel_indices is not None:
+        param_picks = param_picks_by_channel_indices
+    elif param_picks_by_channel_types_or_names is not None and param_picks_by_channel_indices is None:
+        param_picks = param_picks_by_channel_types_or_names
     else:
         param_picks = None
         print('test')

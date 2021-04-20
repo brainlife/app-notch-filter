@@ -42,8 +42,8 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         Width of the stop band in Hz. If None, freqs / 200 is used. Default is None.
     param_trans_bandwidth: float
         Width of the transition band in Hz. Default is 1.
-    param_n_jobs: int
-        Number of jobs to run in parallel. Default is 1.
+    param_n_jobs: int or str
+        Number of jobs to run in parallel. Can be ‘cuda’ if cupy is installed properly and method=’fir’. Default is 1.
     param_method: str
         ‘fir’ (default) will use overlap-add FIR filtering, ‘iir’ will use IIR forward-backward filtering (via filtfilt).
         Can be ‘spectrum_fit’. 
@@ -410,6 +410,12 @@ def main():
             config['param_notch_widths'] = float(config['param_notch_widths'][0])
         else:
             config['param_notch_widths'] = np.array(config['param_notch_widths'])
+
+    # Deal with param_n_jobs parameter
+
+    # When the App is run on BL
+    if config['param_n_jobs'] != 'cuda':
+        config['param_n_jobs']  = int(config['param_n_jobs'])
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

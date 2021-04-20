@@ -26,7 +26,7 @@ that channels in info['bads'] will be included if their names or indices are exp
     * `param_filter_length`: `str` or `int`, length of the FIR filter to use in human-readable time units. Default is `auto`.  If int, specified length in samples. For fir_design=”firwin”, this should not be used.
     * `param_notch_widths`: `float`, optional, width of the stop band in Hz. Default is `None`.
     * `param_trans_bandwidth`: `float`, width of the transition band in Hz. Default is 1.0.
-    * `param_n_jobs`: `int`, number of jobs to run in parallel. Default is 1.
+    * `param_n_jobs`: `int` or `str`, number of jobs to run in parallel. Can be 'cuda' if cupy is installed properly and method=’fir’. Default is 1.
     * `param_method`: `str`, 'fir' will use overlap-add FIR filtering, 'iir' will use IIR forwar-backward filtering. Default is 'fir'.
     * `param_iir_params`: `dict`, optional, dictionary of parameters to use for IIR filtering. To know how to define the dictionary go 
         [there](https://mne.tools/stable/generated/mne.filter.construct_iir_filter.html#mne.filter.construct_iir_filter). Default is `None`. 

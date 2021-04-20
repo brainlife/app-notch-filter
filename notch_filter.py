@@ -405,8 +405,11 @@ def main():
 
     # Convert origin parameter into array when the app is run on BL
     if isinstance(config['param_notch_widths'], str):
-       param_notch_widths = list(map(float, config['param_notch_widths'].split(', ')))
-       config['param_notch_widths'] = np.array(param_notch_widths)
+        config['param_notch_widths'] = list(map(float, config['param_notch_widths'].split(', ')))
+        if len(config['param_notch_widths']) == 1:
+            config['param_notch_widths'] = float(config['param_notch_widths'][0])
+        else:
+            config['param_notch_widths'] = np.array(config['param_notch_widths'])
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

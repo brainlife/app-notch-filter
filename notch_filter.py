@@ -363,6 +363,16 @@ def main():
             value_error_message = f"If you want to select channels using a slice, you must give two or three elements."
             raise ValueError(value_error_message)
 
+    # When the App is run on BL
+
+    # In case of a list of integer
+    if isinstance(picks, str) and picks.find(",") != -1 and picks.find("[") != -1 and picks is not None:
+        picks = picks.replace('[', '')
+        picks = picks.replace(']', '')
+        picks = picks.replace("'", '')
+        config['param_picks_by_channel_types_or_names'] = list(map(int, picks.split(', ')))
+        print('test')
+
     # Deal with param_picks_by_channel_types_or_name parameter
 
     # When the App is run on BL
@@ -374,7 +384,6 @@ def main():
         picks = picks.replace(']', '')
         picks = picks.replace("'", '')
         config['param_picks_by_channel_types_or_names'] = list(map(str, picks.split(', ')))
-        print(config['param_picks_by_channel_types_or_names'])
 
     # Comments messages
     if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:

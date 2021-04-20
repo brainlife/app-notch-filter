@@ -361,11 +361,6 @@ def main():
             value_error_message = f"If you want to select channels using a slice, you must give two or three elements."
             raise ValueError(value_error_message)
 
-    # when run locally
-    if len(config['param_picks_by_channel_indices']) == 2:
-    config['param_picks_by_channel_indices'] = slice(picks[0], picks[1])
-
-
     # Comments messages
     if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:
         comments_notch = f"{config['param_freqs_specific_or_start']}Hz" 

@@ -351,7 +351,9 @@ def main():
 
     # When the App is run locally
     picks = config['param_picks_by_channel_types_or_names']
-    if isinstance(picks, list) is False:
+
+    # In case of a slices
+    if isinstance(picks, list) is False and picks is not None:
         picks = list(map(int, picks.split(', ')))
         if len(picks) == 2:
             config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1])

@@ -370,8 +370,7 @@ def main():
         picks = picks.replace('[', '')
         picks = picks.replace(']', '')
         picks = picks.replace("'", '')
-        config['param_picks_by_channel_types_or_names'] = list(map(int, picks.split(', ')))
-        print('test')
+        config['param_picks_by_channel_indices'] = list(map(int, picks.split(', ')))
 
     # Deal with param_picks_by_channel_types_or_name parameter
 

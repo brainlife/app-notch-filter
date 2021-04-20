@@ -7,7 +7,8 @@ import os
 import shutil
 
 
-def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freqs_step, param_picks,
+def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freqs_step, 
+                 param_picks_by_channel_types_or_name, param_picks_by_channel_indices,
                  param_filter_length, param_widths, param_trans_bandwidth, param_n_jobs,
                  param_method, param_iir_parameters, param_mt_bandwidth, param_p_value,
                  param_phase, param_fir_window, param_fir_design, param_pad):

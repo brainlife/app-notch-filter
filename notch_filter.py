@@ -24,8 +24,15 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     param_freqs_step: float or None
         The step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
         between param_freqs_start and param_freqs_end.
-    param_picks: list, or None
-        Channels to include. Default is None.
+    param_picks_by_channel_types_or_names: str, list of str, or None 
+        Channels to include. In lists, channel type strings (e.g., ['meg', 'eeg']) will pick channels of those types, channel name 
+        strings (e.g., ['MEG0111', 'MEG2623']) will pick the given channels. Can also be the string values “all” 
+        to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
+        that channels in info['bads'] will be included if their names are explicitly provided.
+    param_picks_by_channel_indices: list of int, slice, or None
+        Channels to include. Slices (e.g., (0,10, None) and lists of integers are interpreted as channel indices. 
+        None (default) will pick all data channels. This parameter must be set to None if param_picks_by_channel_types_or_names 
+        is not None. Note that channels in info['bads'] will be included if their indices are explicitly provided.
     param_filter_length: str
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
@@ -63,6 +70,22 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     """
 
     raw.load_data()
+
+    # Raise error if both param picks are not None
+    if config['param_picks_by_channel_types_or_names'] is not None and config['param_picks_by_channel_indices'] is not None:
+        value_error_message = f"You can't provide values for both " \
+                              f"param_picks_by_channel_types_or_names and " \
+                              f"param_picks_by_channel_indices. one of them must be " \
+                              f"set to None."
+        raise ValueError(value_error_message)
+    # Define param_picks
+    elif config['param_picks_by_channel_types_or_names'] is None and config['param_picks_by_channel_indices'] is not None:
+        param_picks = config['param_picks_by_channel_indices']
+    elif config['param_picks_by_channel_types_or_names'] is not None and config['param_picks_by_channel_indices'] is None:
+        param_picks = config['param_picks_by_channel_types_or_names']
+    else:
+        param_picks = None
+        
 
     # Notch between two frequencies
     if param_freqs_end is not None:
@@ -304,9 +327,13 @@ def main():
     if config['param_freqs_step'] == "":
         config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to '' 
 
-    # picks notch
-    if config['param_picks'] == "":
-        config['param_picks'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+    # picks notch by channel types or names
+    if config['param_picks_by_channel_types_or_names'] == "":
+        config['param_picks_by_channel_types_or_names'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+
+    # picks notch by channel indices
+    if config['param_picks_by_channel_indices'] == "":
+        config['param_picks_by_channel_indices'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
     # notch widths
     if config['param_widths'] == "":
@@ -319,6 +346,25 @@ def main():
     # mt bandwidth
     if config['param_mt_bandwidth'] == "":
         config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''    
+
+    # Deal with param_picks_by_channel_indices parameter
+
+    # When the App is run locally
+    picks = config['param_picks_by_channel_types_or_names']
+    if isinstance(picks, list) is False:
+        picks = list(map(int, picks.split(', ')))
+        if len(picks) == 2:
+            config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1])
+        elif len(picks) == 3:
+            config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1], picks[2])
+        else:
+            value_error_message = f"If you want to select channels using a slice, you must give two or three elements."
+            raise ValueError(value_error_message)
+
+    # when run locally
+    if len(config['param_picks_by_channel_indices']) == 2:
+    config['param_picks_by_channel_indices'] = slice(picks[0], picks[1])
+
 
     # Comments messages
     if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:

@@ -9,7 +9,7 @@ import shutil
 
 def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freqs_step, 
                  param_picks_by_channel_types_or_names, param_picks_by_channel_indices,
-                 param_filter_length, param_widths, param_trans_bandwidth, param_n_jobs,
+                 param_filter_length, param_notch_widths, param_trans_bandwidth, param_n_jobs,
                  param_method, param_iir_parameters, param_mt_bandwidth, param_p_value,
                  param_phase, param_fir_window, param_fir_design, param_pad):
     """Apply a notch filter using MNE Python and save the file once filtered.
@@ -38,7 +38,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
         e.g., “10s” or “5500ms”. If int, specified length in samples. For fir_design=”firwin”, this should not be used.
-    param_widths: float, array of floats, or None
+    param_notch_widths: float, array of floats, or None
         Width of the stop band in Hz. If None, freqs / 200 is used. Default is None.
     param_trans_bandwidth: float
         Width of the transition band in Hz. Default is 1.
@@ -95,7 +95,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         freqs = param_freqs_specific_or_start
 
     raw_notch_filtered = raw.notch_filter(freqs=freqs, picks=param_picks,
-                                          filter_length=param_filter_length, notch_widths=param_widths,
+                                          filter_length=param_filter_length, notch_widths=param_notch_widths,
                                           trans_bandwidth=param_trans_bandwidth, n_jobs=param_n_jobs,
                                           method=param_method, iir_params=param_iir_parameters,
                                           mt_bandwidth=param_mt_bandwidth, p_value=param_p_value,
@@ -336,8 +336,8 @@ def main():
         config['param_picks_by_channel_indices'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
     # notch widths
-    if config['param_widths'] == "":
-        config['param_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+    if config['param_notch_widths'] == "":
+        config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
     # iir parameters
     if config['param_iir_parameters'] == "":

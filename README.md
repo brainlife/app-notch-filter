@@ -24,7 +24,7 @@ to pick all channels, or “data” to pick data channels. None (default) will p
 that channels in info['bads'] will be included if their names or indices are explicitly provided.
     * `param_picks_by_channel_indices`: list of `integers` or `slice`, optional, channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers are interpreted as channel indices. None (default) will pick all data channels. This parameter must be set to None if `param_picks_by_channel_types_or_names` is not None.
     * `param_filter_length`: `str` or `int`, length of the FIR filter to use in human-readable time units. Default is `auto`.  If int, specified length in samples. For fir_design=”firwin”, this should not be used.
-    * `param_widths`: `float`, optional, width of the stop band in Hz. Default is `None`.
+    * `param_notch_widths`: `float`, optional, width of the stop band in Hz. Default is `None`.
     * `param_trans_bandwidth`: `float`, width of the transition band in Hz. Default is 1.0.
     * `param_n_jobs`: `int`, number of jobs to run in parallel. Default is 1.
     * `param_method`: `str`, 'fir' will use overlap-add FIR filtering, 'iir' will use IIR forwar-backward filtering. Default is 'fir'.

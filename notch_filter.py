@@ -350,16 +350,15 @@ def main():
     # Deal with param_picks_by_channel_indices parameter
 
     # When the App is run locally
-    picks = config['param_picks_by_channel_types_or_names']
+    picks = config['param_picks_by_channel_indices']
 
     # In case of a slice
     if isinstance(picks, str) and picks.find(",") != -1 and picks is not None:
-        print('aaaaaaaa')
         picks = list(map(int, picks.split(', ')))
         if len(picks) == 2:
-            config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1])
+            config['param_picks_by_channel_indices'] = slice(picks[0], picks[1])
         elif len(picks) == 3:
-            config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1], picks[2])
+            config['param_picks_by_channel_indices'] = slice(picks[0], picks[1], picks[2])
         else:
             value_error_message = f"If you want to select channels using a slice, you must give two or three elements."
             raise ValueError(value_error_message)

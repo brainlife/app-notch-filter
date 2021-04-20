@@ -372,7 +372,7 @@ def main():
     if isinstance(picks, str) and picks.find("[") != -1 and picks is not None:
         picks = picks.replace('[', '')
         picks = picks.replace(']', '')
-        picks = picks.replace("'", '')
+        # picks = picks.replace("'", '')
         config['param_picks_by_channel_types_or_names'] = list(map(str, picks.split(', ')))
         print(config['param_picks_by_channel_types_or_names'])
 

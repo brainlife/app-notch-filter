@@ -366,7 +366,7 @@ def main():
     # Deal with param_picks_by_channel_types_or_name parameter
 
     # When the App is run on BL
-    picks = config['param_picks_by_channel_types_or_name ']
+    picks = config['param_picks_by_channel_types_or_names']
 
     # In case of a list of str
     if isinstance(picks, str) and picks.find("[") != -1 and picks is not None:

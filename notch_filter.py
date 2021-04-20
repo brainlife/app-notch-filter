@@ -76,7 +76,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     if param_picks_by_channel_types_or_names is not None and param_picks_by_channel_indices is not None:
         value_error_message = f"You can't provide values for both " \
                               f"param_picks_by_channel_types_or_names and " \
-                              f"param_picks_by_channel_indices. one of them must be " \
+                              f"param_picks_by_channel_indices. One of them must be " \
                               f"set to None."
         raise ValueError(value_error_message)
     # Define param_picks
@@ -354,6 +354,7 @@ def main():
 
     # In case of a slice
     if isinstance(picks, str) and picks.find(",") != -1 and picks is not None:
+        print('aaaaaaaa')
         picks = list(map(int, picks.split(', ')))
         if len(picks) == 2:
             config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1])

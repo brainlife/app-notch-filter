@@ -31,7 +31,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
         that channels in info['bads'] will be included if their names are explicitly provided.
     param_picks_by_channel_indices: list of int, slice, or None
-        Channels to include. Slices (e.g., (0,10, None) and lists of integers are interpreted as channel indices. 
+        Channels to include. Slices (e.g., "0, 10, None" and lists of integers are interpreted as channel indices. 
         None (default) will pick all data channels. This parameter must be set to None if param_picks_by_channel_types_or_names 
         is not None. Note that channels in info['bads'] will be included if their indices are explicitly provided.
     param_filter_length: str
@@ -352,8 +352,8 @@ def main():
     # When the App is run locally
     picks = config['param_picks_by_channel_types_or_names']
 
-    # In case of a slices
-    if isinstance(picks, list) is False and picks is not None:
+    # In case of a slice
+    if isinstance(picks, str) and picks.find(,) != -1 and picks is not None:
         picks = list(map(int, picks.split(', ')))
         if len(picks) == 2:
             config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1])

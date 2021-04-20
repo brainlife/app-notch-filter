@@ -34,10 +34,10 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         Channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers are interpreted as channel indices. 
         None (default) will pick all data channels. This parameter must be set to None if param_picks_by_channel_types_or_names 
         is not None. Note that channels in info['bads'] will be included if their indices are explicitly provided.
-    param_filter_length: str
+    param_filter_length: str or int
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
-        e.g., “10s” or “5500ms”. 
+        e.g., “10s” or “5500ms”. If int, specified length in samples. For fir_design=”firwin”, this should not be used.
     param_widths: float or None
         Width of the stop band in Hz. If None, freqs / 200 is used. Default is None.
     param_trans_bandwidth: float
@@ -349,7 +349,7 @@ def main():
 
     # Deal with param_picks_by_channel_indices parameter
 
-    # When the App is run locally
+    # When the App is run locally and on BL
     picks = config['param_picks_by_channel_indices']
 
     # In case of a slice
@@ -392,6 +392,10 @@ def main():
         if config['param_freqs_step'] is not None:  
             comments_notch = f"Between {config['param_freqs_specific_or_start']} and " \
                              f"{config['param_freqs_end']}Hz every {config['param_freqs_step']}Hz"
+
+    # Deal with filter_length parameter on BL
+    if config['param_filter_length'] != "auto" and config['param_filter_length'].find("s") == -1:
+        config['param_filter_length'] = int(config['param_filter_length'])
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

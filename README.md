@@ -22,9 +22,8 @@ This is the repository of a Brainlife App that notch filters MEG signals using t
     * `param_picks_by_channel_types_or_names`: `str` or list of `str`, optional, channels to include. In lists, channel type strings (e.g., ['meg', 'eeg']) will pick channels of those types, channel name strings (e.g., ['MEG0111', 'MEG2623']) will pick the given channels. Can also be the string values “all” 
 to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
 that channels in info['bads'] will be included if their names or indices are explicitly provided.
-    * `param_picks_by_channel_indices`: list of `integers` or `slice`, optional, channels to include. Slices (e.g., "0, 10, None") and lists of integers are interpreted as channel indices. 
-None (default) will pick all data channels. This parameter must be set to None if `param_picks_by_channel_types_or_names` is not None.
-    * `param_filter_length`: `str`, length of the FIR filter to use in human-readable time units. Default is `auto`. 
+    * `param_picks_by_channel_indices`: list of `integers` or `slice`, optional, channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers are interpreted as channel indices. None (default) will pick all data channels. This parameter must be set to None if `param_picks_by_channel_types_or_names` is not None.
+    * `param_filter_length`: `str` or `int`, length of the FIR filter to use in human-readable time units. Default is `auto`.  If int, specified length in samples. For fir_design=”firwin”, this should not be used.
     * `param_widths`: `float`, optional, width of the stop band in Hz. Default is `None`.
     * `param_trans_bandwidth`: `float`, width of the transition band in Hz. Default is 1.0.
     * `param_n_jobs`: `int`, number of jobs to run in parallel. Default is 1.

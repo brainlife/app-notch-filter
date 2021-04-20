@@ -374,7 +374,7 @@ def main():
         picks = picks.replace(']', '')
         picks = picks.replace("'", '')
         config['param_picks_by_channel_types_or_names'] = list(map(str, picks.split(', ')))
-
+        print(config['param_picks_by_channel_types_or_names'])
 
     # Comments messages
     if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:

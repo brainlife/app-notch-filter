@@ -38,7 +38,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
         e.g., “10s” or “5500ms”. If int, specified length in samples. For fir_design=”firwin”, this should not be used.
-    param_widths: float or None
+    param_widths: float, array of floats, or None
         Width of the stop band in Hz. If None, freqs / 200 is used. Default is None.
     param_trans_bandwidth: float
         Width of the transition band in Hz. Default is 1.
@@ -396,6 +396,17 @@ def main():
     # Deal with filter_length parameter on BL
     if config['param_filter_length'] != "auto" and config['param_filter_length'].find("s") == -1:
         config['param_filter_length'] = int(config['param_filter_length'])
+
+    # Deal with param_notch_widths parameter
+
+    # Convert origin parameter into array when the app is run locally
+    if isinstance(config['param_notch_widths'], list):
+       config['param_notch_widths'] = np.array(config['param_notch_widths'])
+
+    # Convert origin parameter into array when the app is run on BL
+    if isinstance(config['param_notch_widths'], str):
+       param_notch_widths = list(map(float, config['param_notch_widths'].split(', ')))
+       config['param_notch_widths'] = np.array(param_notch_widths)
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

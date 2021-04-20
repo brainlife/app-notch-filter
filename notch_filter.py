@@ -370,6 +370,7 @@ def main():
 
     # In case of a list of str
     if isinstance(picks, str) and picks.find("[") != -1 and picks is not None:
+        print('tessst')
         picks = picks.replace('[', '')
         picks = picks.replace(']', '')
         picks = picks.replace("'", '')

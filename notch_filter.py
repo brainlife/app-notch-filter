@@ -365,7 +365,7 @@ def main():
 
     # When the App is run on BL
 
-    # In case of a list of integer
+    # In case of a list of integers
     if isinstance(picks, str) and picks.find(",") != -1 and picks.find("[") != -1 and picks is not None:
         picks = picks.replace('[', '')
         picks = picks.replace(']', '')

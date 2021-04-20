@@ -353,7 +353,7 @@ def main():
     picks = config['param_picks_by_channel_types_or_names']
 
     # In case of a slice
-    if isinstance(picks, str) and picks.find(,) != -1 and picks is not None:
+    if isinstance(picks, str) and picks.find(",") != -1 and picks is not None:
         picks = list(map(int, picks.split(', ')))
         if len(picks) == 2:
             config['param_picks_by_channel_types_or_names'] = slice(picks[0], picks[1])

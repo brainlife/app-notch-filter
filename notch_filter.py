@@ -85,9 +85,7 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
     elif param_picks_by_channel_types_or_names is not None and param_picks_by_channel_indices is None:
         param_picks = param_picks_by_channel_types_or_names
     else:
-        param_picks = None
-        print('test')
-        
+        param_picks = None       
 
     # Notch between two frequencies
     if param_freqs_end is not None:

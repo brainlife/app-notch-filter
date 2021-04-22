@@ -31,9 +31,10 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
         that channels in info['bads'] will be included if their names are explicitly provided.
     param_picks_by_channel_indices: list of int, slice, or None
-        Channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers are interpreted as channel indices. 
-        None (default) will pick all data channels. This parameter must be set to None if param_picks_by_channel_types_or_names 
-        is not None. Note that channels in info['bads'] will be included if their indices are explicitly provided.
+        Channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers 
+        are interpreted as channel indices. None (default) will pick all data channels. This parameter must be set 
+        to None if param_picks_by_channel_types_or_names is not None. Note that channels in info['bads'] will 
+        be included if their indices are explicitly provided.
     param_filter_length: str or int
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 

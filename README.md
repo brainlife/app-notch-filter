@@ -19,7 +19,7 @@ This is the repository of a Brainlife App that notch filters MEG signals using t
     * `param_freqs_end`: `float`, optional, end of the interval of frequencies to filter out in Hz. This value is excluded. Default is 251.  
     * `param_freqs_step`: `float`, optional, the step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
 between param_freqs_start and param_freqs_end. Default is 50.
-    * `param_picks_by_channel_types_or_names`: `str` or list of `str`, optional, channels to include. In lists, channel type strings (e.g., ['meg', 'eeg']) will pick channels of those types, channel name strings (e.g., ['MEG0111', 'MEG2623']) will pick the given channels. Can also be the string values “all” 
+    * `param_picks_by_channel_types_or_names`: `str` or list of `str`, optional, channels to include. In lists, channel type strings (e.g., ["meg", "eeg"]) will pick channels of those types, channel name strings (e.g., ["MEG0111", "MEG2623"]) will pick the given channels. Can also be the string values “all” 
 to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
 that channels in info['bads'] will be included if their names or indices are explicitly provided.
     * `param_picks_by_channel_indices`: list of `integers` or `slice`, optional, channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers are interpreted as channel indices. None (default) will pick all data channels. This parameter must be set to None if `param_picks_by_channel_types_or_names` is not `None`.

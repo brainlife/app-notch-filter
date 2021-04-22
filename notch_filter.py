@@ -26,8 +26,8 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         The step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
         between param_freqs_start and param_freqs_end.
     param_picks_by_channel_types_or_names: str, list of str, or None 
-        Channels to include. In lists, channel type strings (e.g., ['meg', 'eeg']) will pick channels of those types, channel name 
-        strings (e.g., ['MEG0111', 'MEG2623']) will pick the given channels. Can also be the string values “all” 
+        Channels to include. In lists, channel type strings (e.g., ["meg", "eeg"]) will pick channels of those types, channel name 
+        strings (e.g., ["MEG0111", "MEG2623"]) will pick the given channels. Can also be the string values “all” 
         to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
         that channels in info['bads'] will be included if their names are explicitly provided.
     param_picks_by_channel_indices: list of int, slice, or None
@@ -400,11 +400,11 @@ def main():
 
     # Deal with param_notch_widths parameter
 
-    # Convert origin parameter into array when the app is run locally
+    # Convert notch widths parameter into array when the app is run locally
     if isinstance(config['param_notch_widths'], list):
        config['param_notch_widths'] = np.array(config['param_notch_widths'])
 
-    # Convert origin parameter into array when the app is run on BL
+    # Convert notch widths parameter into array when the app is run on BL
     if isinstance(config['param_notch_widths'], str):
         config['param_notch_widths'] = list(map(float, config['param_notch_widths'].split(', ')))
         if len(config['param_notch_widths']) == 1:

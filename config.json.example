@@ -11,7 +11,7 @@
 	"param_picks_by_channel_types_or_names": null,
 	"param_picks_by_channel_indices": null, 
 	"param_filter_length": "auto",
-	"param_notch_widths": 2,
+	"param_notch_widths": null,
 	"param_trans_bandwidth": 1.0,
 	"param_n_jobs": 1,
 	"param_method": "fir",

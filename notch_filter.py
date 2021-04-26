@@ -26,14 +26,15 @@ def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freq
         The step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
         between param_freqs_start and param_freqs_end.
     param_picks_by_channel_types_or_names: str, list of str, or None 
-        Channels to include. In lists, channel type strings (e.g., ['meg', 'eeg']) will pick channels of those types, channel name 
-        strings (e.g., ['MEG0111', 'MEG2623']) will pick the given channels. Can also be the string values “all” 
+        Channels to include. In lists, channel type strings (e.g., ["meg", "eeg"]) will pick channels of those types, channel name 
+        strings (e.g., ["MEG0111", "MEG2623"]) will pick the given channels. Can also be the string values “all” 
         to pick all channels, or “data” to pick data channels. None (default) will pick all data channels. Note 
         that channels in info['bads'] will be included if their names are explicitly provided.
     param_picks_by_channel_indices: list of int, slice, or None
-        Channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers are interpreted as channel indices. 
-        None (default) will pick all data channels. This parameter must be set to None if param_picks_by_channel_types_or_names 
-        is not None. Note that channels in info['bads'] will be included if their indices are explicitly provided.
+        Channels to include. Slices (e.g., "0, 10, 2" or "0, 10" if you don't want a step) and lists of integers 
+        are interpreted as channel indices. None (default) will pick all data channels. This parameter must be set 
+        to None if param_picks_by_channel_types_or_names is not None. Note that channels in info['bads'] will 
+        be included if their indices are explicitly provided.
     param_filter_length: str or int
         Length of the FIR filter to use (if applicable). Can be ‘auto’ (default) : the filter length is chosen based 
         on the size of the transition regions, or an other str (human-readable time in units of “s” or “ms”: 
@@ -313,8 +314,6 @@ def main():
     tmp = dict((k, None) for k, v in config.items() if v == "")
     config.update(tmp)
 
-
-
     # Check for None parameters 
 
     # freqs specific or start
@@ -387,7 +386,12 @@ def main():
     if config['param_filter_length'] != "auto" and config['param_filter_length'].find("s") == -1:
         config['param_filter_length'] = int(config['param_filter_length'])
 
+<<<<<<< HEAD
     # Deal with param_notch_widths parameter #
+=======
+    # Deal with param_notch_widths parameter
+
+>>>>>>> 2bd92f8e51acbb0a7ed81fa84ce5c59cef15041c
     # Convert notch widths parameter into array when the app is run locally
     if isinstance(config['param_notch_widths'], list):
        config['param_notch_widths'] = np.array(config['param_notch_widths'])

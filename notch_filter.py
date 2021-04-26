@@ -308,51 +308,56 @@ def main():
     events_file = config.pop('events')
     if os.path.exists(events_file) is True:
         shutil.copy2(events_file, 'out_dir_notch_filter/events.tsv')  # required to run a pipeline on BL
+    
+    # Convert all "" into None when the App runs on BL
+    tmp = dict((k, None) for k, v in config.items() if v == "")
+    config.update(tmp)
+
+
 
     # Check for None parameters 
 
     # freqs specific or start
-    if config['param_freqs_specific_or_start'] == "":
-        config['param_freqs_specific_or_starts'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-        if config['param_method'] != 'spectrum_fit':
-            value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
-            # Raise exception
-            raise ValueError(value_error_message)
+    # if config['param_freqs_specific_or_start'] == "":
+    #     config['param_freqs_specific_or_starts'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+    #     if config['param_method'] != 'spectrum_fit':
+    #         value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
+    #         # Raise exception
+    #         raise ValueError(value_error_message)
 
-    # freqs end
-    if config['param_freqs_end'] == "":
-        config['param_freqs_end'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+    # # freqs end
+    # if config['param_freqs_end'] == "":
+    #     config['param_freqs_end'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
-    # freqs step
-    if config['param_freqs_step'] == "":
-        config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to '' 
+    # # freqs step
+    # if config['param_freqs_step'] == "":
+    #     config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to '' 
 
-    # picks notch by channel types or names
-    if config['param_picks_by_channel_types_or_names'] == "":
-        config['param_picks_by_channel_types_or_names'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+    # # picks notch by channel types or names
+    # if config['param_picks_by_channel_types_or_names'] == "":
+    #     config['param_picks_by_channel_types_or_names'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
-    # picks notch by channel indices
-    if config['param_picks_by_channel_indices'] == "":
-        config['param_picks_by_channel_indices'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
+    # # picks notch by channel indices
+    # if config['param_picks_by_channel_indices'] == "":
+    #     config['param_picks_by_channel_indices'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
 
-    # notch widths
-    if config['param_notch_widths'] == "":
-        config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+    # # notch widths
+    # if config['param_notch_widths'] == "":
+    #     config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
-    # iir parameters
-    if config['param_iir_parameters'] == "":
-        config['param_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
+    # # iir parameters
+    # if config['param_iir_parameters'] == "":
+    #     config['param_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
 
-    # mt bandwidth
-    if config['param_mt_bandwidth'] == "":
-        config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''    
+    # # mt bandwidth
+    # if config['param_mt_bandwidth'] == "":
+    #     config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''    
 
-    # Deal with param_picks_by_channel_indices parameter
+    ## Convert parameters ## 
 
-    # When the App is run locally and on BL
+    # Deal with param_picks_by_channel_indices parameter #
+    # Convert it into a slice When the App is run locally and on BL
     picks = config['param_picks_by_channel_indices']
-
-    # In case of a slice
     if isinstance(picks, str) and picks.find(",") != -1 and picks.find("[") == -1 and picks is not None:
         picks = list(map(int, picks.split(', ')))
         if len(picks) == 2:
@@ -363,47 +368,31 @@ def main():
             value_error_message = f"If you want to select channels using a slice, you must give two or three elements."
             raise ValueError(value_error_message)
 
-    # When the App is run on BL
-
-    # In case of a list of integers
+    # Convert it into a list of int when the app is run on BL
     if isinstance(picks, str) and picks.find(",") != -1 and picks.find("[") != -1 and picks is not None:
         picks = picks.replace('[', '')
         picks = picks.replace(']', '')
-        picks = picks.replace("'", '')
         config['param_picks_by_channel_indices'] = list(map(int, picks.split(', ')))
 
-    # Deal with param_picks_by_channel_types_or_name parameter
-
-    # When the App is run on BL
+    # Deal with param_picks_by_channel_types_or_name parameter #
+    # Convert it into a list of str when the App is run on BL
     picks = config['param_picks_by_channel_types_or_names']
-
-    # In case of a list of str
     if isinstance(picks, str) and picks.find("[") != -1 and picks is not None:
         picks = picks.replace('[', '')
         picks = picks.replace(']', '')
-        picks = picks.replace("'", '')
         config['param_picks_by_channel_types_or_names'] = list(map(str, picks.split(', ')))
 
-    # Comments messages
-    if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:
-        comments_notch = f"{config['param_freqs_specific_or_start']}Hz" 
-    elif config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is not None:  
-        comments_notch = f"Between {config['param_freqs_specific_or_start']} and {config['param_freqs_end']}Hz"
-        if config['param_freqs_step'] is not None:  
-            comments_notch = f"Between {config['param_freqs_specific_or_start']} and " \
-                             f"{config['param_freqs_end']}Hz every {config['param_freqs_step']}Hz"
-
-    # Deal with filter_length parameter on BL
+    # Deal with filter_length parameter #
+    # Convert it into int if not "auto" when the App runs on BL
     if config['param_filter_length'] != "auto" and config['param_filter_length'].find("s") == -1:
         config['param_filter_length'] = int(config['param_filter_length'])
 
-    # Deal with param_notch_widths parameter
-
-    # Convert origin parameter into array when the app is run locally
+    # Deal with param_notch_widths parameter #
+    # Convert notch widths parameter into array when the app is run locally
     if isinstance(config['param_notch_widths'], list):
        config['param_notch_widths'] = np.array(config['param_notch_widths'])
 
-    # Convert origin parameter into array when the app is run on BL
+    # Convert notch widths parameter into array when the app is run on BL
     if isinstance(config['param_notch_widths'], str):
         config['param_notch_widths'] = list(map(float, config['param_notch_widths'].split(', ')))
         if len(config['param_notch_widths']) == 1:
@@ -411,11 +400,19 @@ def main():
         else:
             config['param_notch_widths'] = np.array(config['param_notch_widths'])
 
-    # Deal with param_n_jobs parameter
-
-    # When the App is run on BL
+    # Deal with param_n_jobs parameter #
+    # Convert it into into if not "cuda" When the App is run on BL
     if config['param_n_jobs'] != 'cuda':
         config['param_n_jobs']  = int(config['param_n_jobs'])
+
+    # Comments messages about filtering
+    if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:
+        comments_notch = f"{config['param_freqs_specific_or_start']}Hz" 
+    elif config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is not None:  
+        comments_notch = f"Between {config['param_freqs_specific_or_start']} and {config['param_freqs_end']}Hz"
+        if config['param_freqs_step'] is not None:  
+            comments_notch = f"Between {config['param_freqs_specific_or_start']} and " \
+                             f"{config['param_freqs_end']}Hz every {config['param_freqs_step']}Hz"
 
     # Keep bad channels in memory
     bad_channels = raw.info['bads']

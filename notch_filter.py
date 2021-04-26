@@ -386,12 +386,7 @@ def main():
     if config['param_filter_length'] != "auto" and config['param_filter_length'].find("s") == -1:
         config['param_filter_length'] = int(config['param_filter_length'])
 
-<<<<<<< HEAD
     # Deal with param_notch_widths parameter #
-=======
-    # Deal with param_notch_widths parameter
-
->>>>>>> 2bd92f8e51acbb0a7ed81fa84ce5c59cef15041c
     # Convert notch widths parameter into array when the app is run locally
     if isinstance(config['param_notch_widths'], list):
        config['param_notch_widths'] = np.array(config['param_notch_widths'])

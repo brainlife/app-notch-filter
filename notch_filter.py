@@ -314,43 +314,11 @@ def main():
     tmp = dict((k, None) for k, v in config.items() if v == "")
     config.update(tmp)
 
-    # Check for None parameters 
-
-    # freqs specific or start
-    # if config['param_freqs_specific_or_start'] == "":
-    #     config['param_freqs_specific_or_starts'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-    #     if config['param_method'] != 'spectrum_fit':
-    #         value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
-    #         # Raise exception
-    #         raise ValueError(value_error_message)
-
-    # # freqs end
-    # if config['param_freqs_end'] == "":
-    #     config['param_freqs_end'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-
-    # # freqs step
-    # if config['param_freqs_step'] == "":
-    #     config['param_freqs_step'] = None  # when App is run on Bl, no value for this parameter corresponds to '' 
-
-    # # picks notch by channel types or names
-    # if config['param_picks_by_channel_types_or_names'] == "":
-    #     config['param_picks_by_channel_types_or_names'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-
-    # # picks notch by channel indices
-    # if config['param_picks_by_channel_indices'] == "":
-    #     config['param_picks_by_channel_indices'] = None  # when App is run on Bl, no value for this parameter corresponds to ''
-
-    # # notch widths
-    # if config['param_notch_widths'] == "":
-    #     config['param_notch_widths'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
-
-    # # iir parameters
-    # if config['param_iir_parameters'] == "":
-    #     config['param_iir_parameters'] = None  # when App is run on Bl, no value for this parameter corresponds to ''  
-
-    # # mt bandwidth
-    # if config['param_mt_bandwidth'] == "":
-    #     config['param_mt_bandwidth'] = None  # when App is run on Bl, no value for this parameter corresponds to ''    
+    # Raise error if no start paeameter and method is wrong 
+    if config['param_freqs_specific_or_start'] is None and config['param_method'] != 'spectrum_fit':
+        value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
+        # Raise exception
+        raise ValueError(value_error_message)
 
     ## Convert parameters ## 
 

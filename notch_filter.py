@@ -285,6 +285,9 @@ def main():
     data_file = config.pop('fif')
     raw = mne.io.read_raw_fif(data_file, allow_maxshield=True)
 
+    
+    ## Read the optional files ##
+
     # Read the crosstalk file
     cross_talk_file = config.pop('crosstalk')
     if os.path.exists(cross_talk_file) is True:
@@ -320,6 +323,7 @@ def main():
         # Raise exception
         raise ValueError(value_error_message)
 
+    
     ## Convert parameters ## 
 
     # Deal with param_picks_by_channel_indices parameter #
@@ -384,7 +388,9 @@ def main():
     # Keep bad channels in memory
     bad_channels = raw.info['bads']
 
-    # Define kwargs
+    
+    ## Define kwargs ##
+
     # Delete keys values in config.json when this app is executed on Brainlife
     if '_app' and '_tid' and '_inputs' and '_outputs' in config.keys():
         del config['_app'], config['_tid'], config['_inputs'], config['_outputs'] 

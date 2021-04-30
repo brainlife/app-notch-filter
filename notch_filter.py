@@ -137,35 +137,19 @@ def _compute_snr(meg_file):
 
 
 def _generate_report(data_file_before, raw_before_preprocessing, raw_after_preprocessing, bad_channels,
-                     comments_about_filtering, notch_freqs_start, snr_before, snr_after):
+                     comments_notch, param_freqs_specific_or_start, param_freqs_end, param_freqs_step, 
+                     param_picks_by_channel_types_or_names, param_picks_by_channel_indices,
+                     param_filter_length, param_notch_widths, param_trans_bandwidth, param_n_jobs,
+                     param_method, param_iir_parameters, param_mt_bandwidth, param_p_value,
+                     param_phase, param_fir_window, param_fir_design, param_pad):
     # Generate a report
 
     # Instance of mne.Report
     report = mne.Report(title='Results of filtering ', verbose=True)
 
-    # Plot MEG signals in temporal domain
-    fig_raw = raw_before_preprocessing.pick(['meg'], exclude='bads').plot(duration=10, scalings='auto', butterfly=False,
-                                                                          show_scrollbars=False, proj=False)
-    fig_raw_maxfilter = raw_after_preprocessing.pick(['meg'], exclude='bads').plot(duration=10, scalings='auto',
-                                                                                   butterfly=False,
-                                                                                   show_scrollbars=False, proj=False)
+    ## Give some info about the file before preprocessing ##
 
-    # Plot power spectral density
-    fig_raw_psd = raw_before_preprocessing.plot_psd()
-    fig_raw_maxfilter_psd = raw_after_preprocessing.plot_psd()
-
-    # Add figures to report
-    report.add_figs_to_section(fig_raw, captions='MEG signals before filtering', section='Temporal domain')
-    report.add_figs_to_section(fig_raw_maxfilter, captions='MEG signals after filtering',
-                               comments=comments_about_filtering,
-                               section='Temporal domain')
-    report.add_figs_to_section(fig_raw_psd, captions='Power spectral density before filtering',
-                               section='Frequency domain')
-    report.add_figs_to_section(fig_raw_maxfilter_psd, captions='Power spectral density after filtering',
-                               comments=comments_about_filtering,
-                               section='Frequency domain')
-
-    # Check if MaxFilter was already applied on the data
+    # Check if MaxFilter was already applied on the data # 
     if raw_before_preprocessing.info['proc_history']:
         sss_info = raw_before_preprocessing.info['proc_history'][0]['max_info']['sss_info']
         tsss_info = raw_before_preprocessing.info['proc_history'][0]['max_info']['max_st']
@@ -176,14 +160,12 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
     else:
         message_channels = bad_channels
 
-    # Put this info in html format
     # Give some info about the file before preprocessing
     sampling_frequency = raw_before_preprocessing.info['sfreq']
     highpass = raw_before_preprocessing.info['highpass']
     lowpass = raw_before_preprocessing.info['lowpass']
 
-    # Put this info in html format
-    # Info on data
+    # Put this info in html format # 
     html_text_info = f"""<html>
 
         <head>
@@ -215,8 +197,62 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
 
         </html>"""
 
+    # Add html to reports
+    report.add_htmls_to_section(html_text_info, captions='MEG recording features', section='Data info', replace=False)
+
+    # Plot MEG signals in temporal domain
+    fig_raw = raw_before_preprocessing.pick(['meg'], exclude='bads').plot(duration=10, scalings='auto', butterfly=False,
+                                                                          show_scrollbars=False, proj=False)
+    fig_raw_maxfilter = raw_after_preprocessing.pick(['meg'], exclude='bads').plot(duration=10, scalings='auto',
+                                                                                   butterfly=False,
+                                                                                   show_scrollbars=False, proj=False)
+
+    # Plot power spectral density
+    fig_raw_psd = raw_before_preprocessing.plot_psd()
+    fig_raw_maxfilter_psd = raw_after_preprocessing.plot_psd()
+
+    # Add figures to report
+    report.add_figs_to_section(fig_raw, captions='MEG signals before notch filtering', section='Temporal domain')
+    report.add_figs_to_section(fig_raw_maxfilter, captions='MEG signals after notch filtering',
+                               comments=f'Notch Filter: {comments_notch}',
+                               section='Temporal domain')
+    report.add_figs_to_section(fig_raw_psd, captions='Power spectral density before notch filtering',
+                               section='Frequency domain')
+    report.add_figs_to_section(fig_raw_maxfilter_psd, captions='Power spectral density after notch filtering',
+                               comments=f'Notch Filter: {comments_notch}',
+                               section='Frequency domain')
+
     # Info on SNR
-    html_text_snr = f"""<html>
+    # html_text_snr = f"""<html>
+
+    # <head>
+    #     <style type="text/css">
+    #         table {{ border-collapse: collapse;}}
+    #         td {{ text-align: center; border: 1px solid #000000; border-style: dashed; font-size: 15px; }}
+    #     </style>
+    # </head>
+
+    # <body>
+    #     <table width="50%" height="80%" border="2px">
+    #         <tr>
+    #             <td>SNR before filtering: {snr_before}</td>
+    #         </tr>
+    #         <tr>
+    #             <td>SNR after filtering: {snr_after}</td>
+    #         </tr>
+    #     </table>
+    # </body>
+
+    # </html>"""
+
+    # report.add_htmls_to_section(html_text_snr, captions='Signal to noise ratio', section='Signal to noise ratio',
+    #                             replace=False)
+
+
+    ## Values of the parameters of the App ## 
+
+    # Put this info in html format # 
+    html_text_parameters = f"""<html>
 
     <head>
         <style type="text/css">
@@ -228,33 +264,55 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
     <body>
         <table width="50%" height="80%" border="2px">
             <tr>
-                <td>SNR before filtering: {snr_before}</td>
+                <td>Frequency to notch filter: {param_freqs_specific_or_start} Hz</td>
             </tr>
             <tr>
-                <td>SNR after filtering: {snr_after}</td>
-            </tr>
-        </table>
-    </body>
-
-    </html>"""
-
-    # Info on SNR
-    html_text_summary_filtering = f"""<html>
-
-    <head>
-        <style type="text/css">
-            table {{ border-collapse: collapse;}}
-            td {{ text-align: center; border: 1px solid #000000; border-style: dashed; font-size: 15px; }}
-        </style>
-    </head>
-
-    <body>
-        <table width="50%" height="80%" border="2px">
-            <tr>
-                <td>Temporal filtering: {comments_about_filtering}</td>
+                <td>End of the interval of frequencies to filter out: {param_freqs_end} Hz</td>
             </tr>
             <tr>
-                <td>Notch: {notch_freqs_start}</td>
+                <td>Step to filter out specific frequency between the two previous frequencies: {param_freqs_step} Hz</td>
+            </tr>
+            <tr>
+                <td>Types or names of channels to include: {param_picks_by_channel_types_or_names}</td>
+            </tr>
+            <tr>
+                <td>Indices of channels to include: {param_picks_by_channel_indices}</td>
+            </tr>
+            <tr>
+                <td>Length of the FIR filter {param_filter_length}</td>
+            </tr>
+            <tr>
+                <td>Widths of the stop band: {param_notch_widths} Hz</td>
+            </tr>
+            <tr>
+                <td>Wwidth of the transition band: {param_trans_bandwidth}</td>
+            </tr>
+            <tr>
+                <td>Number of jobs to run in parallel: {param_n_jobs}</td>
+            </tr>
+            <tr>
+                <td>Filtering method: {param_method}</td>
+            </tr>
+            <tr>
+                <td>IIR parameters: {param_iir_parameters}</td>
+            </tr>
+            <tr>
+                <td>Bandwidth of the multitaper windowing: {param_mt_bandwidth} Hz</td>
+            </tr>
+            <tr>
+                <td>p-value: {param_p_value}</td>
+            </tr>
+            <tr>
+                <td>Phase of the filter: {param_phase}</td>
+            </tr>
+            <tr>
+                <td>FIR window: {param_fir_window}</td>
+            </tr>
+            <tr>
+                <td>FIR design: {param_fir_design}</td>
+            </tr>
+            <tr>
+                <td>Type of padding: {param_pad}</td>
             </tr>
         </table>
     </body>
@@ -262,11 +320,8 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
     </html>"""
 
     # Add html to reports
-    report.add_htmls_to_section(html_text_info, captions='MEG recording features', section='Data info', replace=False)
-    report.add_htmls_to_section(html_text_summary_filtering, captions='Summary filtering applied',
-                                section='Filtering info', replace=False)
-    report.add_htmls_to_section(html_text_snr, captions='Signal to noise ratio', section='Signal to noise ratio',
-                                replace=False)
+    report.add_htmls_to_section(html_text_parameters, captions='Values of the parameters of the App', 
+                                section='Parameters of the App', replace=False)
 
     # Save report
     report.save('out_dir_report/report_filtering.html', overwrite=True)
@@ -317,7 +372,7 @@ def main():
     tmp = dict((k, None) for k, v in config.items() if v == "")
     config.update(tmp)
 
-    # Raise error if no start paeameter and method is wrong 
+    # Raise error if no start parameter and method is wrong 
     if config['param_freqs_specific_or_start'] is None and config['param_method'] != 'spectrum_fit':
         value_error_message = f'This frequency can only be None when method is spectrum_fit.' 
         # Raise exception
@@ -376,7 +431,8 @@ def main():
     if config['param_n_jobs'] != 'cuda':
         config['param_n_jobs']  = int(config['param_n_jobs'])
 
-    # Comments messages about filtering
+    
+    # Comments messages about filtering #
     if config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is None:
         comments_notch = f"{config['param_freqs_specific_or_start']}Hz" 
     elif config['param_freqs_specific_or_start'] is not None and config['param_freqs_end'] is not None:  
@@ -385,7 +441,7 @@ def main():
             comments_notch = f"Between {config['param_freqs_specific_or_start']} and " \
                              f"{config['param_freqs_end']}Hz every {config['param_freqs_step']}Hz"
 
-    # Keep bad channels in memory
+    # Keep bad channels in memory #
     bad_channels = raw.info['bads']
 
     
@@ -409,8 +465,8 @@ def main():
     # snr_after = _compute_snr(raw_filtered)
 
     # Generate a report
-    # _generate_report(data_file, raw, raw_filtered, bad_channels, comments_about_filtering,
-    #                  comments_notch, snr_before, snr_after)
+    _generate_report(data_file, raw, raw_notch_filtered, bad_channels,
+                     comments_notch, **kwargs)
 
     # Save the dict_json_product in a json file
     with open('product.json', 'w') as outfile:

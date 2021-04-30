@@ -16,7 +16,7 @@ This is the repository of a Brainlife App that notch filters MEG signals using t
     * an optional event file in `.tsv`.
 4) Input parameters are:
     * `param_freqs_specific_or_start`: `float`, optional, frequency to notch filter in Hz. Default is 50.
-    * `param_freqs_end`: `float`, optional, end of the interval of frequencies to filter out in Hz. This value is excluded. Default is 251.  
+    * `param_freqs_end`: `float`, optional, end of the interval of frequencies to filter out in Hz. This value is excluded. Default is 251. 
     * `param_freqs_step`: `float`, optional, the step in Hz to filter out specific frequencies (for instance the power lines harmonics) 
 between param_freqs_start and param_freqs_end. Default is 50.
     * `param_picks_by_channel_types_or_names`: `str` or list of `str`, optional, channels to include. In lists, channel type strings (e.g., ["meg", "eeg"]) will pick channels of those types, channel name strings (e.g., ["MEG0111", "MEG2623"]) will pick the given channels. Can also be the string values “all” 

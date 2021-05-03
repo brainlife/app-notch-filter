@@ -250,6 +250,7 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
 
 
     ## Values of the parameters of the App ## 
+    mne_version = mne.__version__
 
     # Put this info in html format # 
     html_text_parameters = f"""<html>
@@ -285,7 +286,7 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
                 <td>Widths of the stop band: {param_notch_widths} Hz</td>
             </tr>
             <tr>
-                <td>Wwidth of the transition band: {param_trans_bandwidth}</td>
+                <td>Width of the transition band: {param_trans_bandwidth}</td>
             </tr>
             <tr>
                 <td>Number of jobs to run in parallel: {param_n_jobs}</td>
@@ -313,6 +314,9 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
             </tr>
             <tr>
                 <td>Type of padding: {param_pad}</td>
+            </tr>
+            <tr>
+                <td>MNE version used: {mne_version}</td>
             </tr>
         </table>
     </body>

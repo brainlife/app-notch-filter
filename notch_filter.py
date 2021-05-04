@@ -200,16 +200,23 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
     # Add html to reports
     report.add_htmls_to_section(html_text_info, captions='MEG recording features', section='Data info', replace=False)
 
-    # Plot MEG signals in temporal domain
-    fig_raw = raw_before_preprocessing.pick(['meg'], exclude='bads').plot(duration=10, scalings='auto', butterfly=False,
+    # Define param_picks
+    if param_picks_by_channel_types_or_names is None and param_picks_by_channel_indices is not None:
+        param_picks = param_picks_by_channel_indices
+    elif param_picks_by_channel_types_or_names is not None and param_picks_by_channel_indices is None:
+        param_picks = param_picks_by_channel_types_or_names
+    else:
+        param_picks = None       
+
+    fig_raw = raw_before_preprocessing.pick(param_picks, exclude='bads').plot(duration=10, scalings='auto', butterfly=False,
                                                                           show_scrollbars=False, proj=False)
-    fig_raw_maxfilter = raw_after_preprocessing.pick(['meg'], exclude='bads').plot(duration=10, scalings='auto',
+    fig_raw_maxfilter = raw_after_preprocessing.pick(param_picks, exclude='bads').plot(duration=10, scalings='auto',
                                                                                    butterfly=False,
                                                                                    show_scrollbars=False, proj=False)
 
     # Plot power spectral density
-    fig_raw_psd = raw_before_preprocessing.plot_psd()
-    fig_raw_maxfilter_psd = raw_after_preprocessing.plot_psd()
+    fig_raw_psd = raw_before_preprocessing.plot_psd(picks=param_picks)
+    fig_raw_maxfilter_psd = raw_after_preprocessing.plot_psd(picks=param_picks)
 
     # Add figures to report
     report.add_figs_to_section(fig_raw, captions='MEG signals before notch filtering', section='Temporal domain')

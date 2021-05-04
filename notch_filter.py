@@ -198,7 +198,7 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
         </html>"""
 
     # Add html to reports
-    report.add_htmls_to_section(html_text_info, captions='MEG recording features', section='Data info', replace=False)
+    report.add_htmls_to_section(html_text_info, captions='Data recording features', section='Data info', replace=False)
 
     # Define param_picks
     if param_picks_by_channel_types_or_names is None and param_picks_by_channel_indices is not None:
@@ -219,8 +219,8 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
     fig_raw_maxfilter_psd = raw_after_preprocessing.plot_psd(picks=param_picks)
 
     # Add figures to report
-    report.add_figs_to_section(fig_raw, captions='MEG signals before notch filtering', section='Temporal domain')
-    report.add_figs_to_section(fig_raw_maxfilter, captions='MEG signals after notch filtering',
+    report.add_figs_to_section(fig_raw, captions='Signals before notch filtering', section='Temporal domain')
+    report.add_figs_to_section(fig_raw_maxfilter, captions='Signals after notch filtering',
                                comments=f'Notch Filter: {comments_notch}',
                                section='Temporal domain')
     report.add_figs_to_section(fig_raw_psd, captions='Power spectral density before notch filtering',

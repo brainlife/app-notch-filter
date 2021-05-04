@@ -209,10 +209,10 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
         param_picks = None       
 
     fig_raw = raw_before_preprocessing.pick(param_picks, exclude='bads').plot(duration=10, scalings='auto', butterfly=False,
-                                                                          show_scrollbars=False, proj=False)
+                                                                              show_scrollbars=False, proj=False)
     fig_raw_maxfilter = raw_after_preprocessing.pick(param_picks, exclude='bads').plot(duration=10, scalings='auto',
-                                                                                   butterfly=False,
-                                                                                   show_scrollbars=False, proj=False)
+                                                                                       butterfly=False,
+                                                                                       show_scrollbars=False, proj=False)
 
     # Plot power spectral density
     fig_raw_psd = raw_before_preprocessing.plot_psd(picks=param_picks)

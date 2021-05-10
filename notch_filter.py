@@ -388,7 +388,7 @@ def main():
     channels_file = config.pop('channels')
     if channels_file is not None:
         if os.path.exists(channels_file):
-            shutil.copy2(channels_file, 'out_dir/channels.tsv')  # required to run a pipeline on BL
+            shutil.copy2(channels_file, 'out_dir_notch_filter/channels.tsv')  # required to run a pipeline on BL
     
     # Convert all "" into None when the App runs on BL
     tmp = dict((k, None) for k, v in config.items() if v == "")

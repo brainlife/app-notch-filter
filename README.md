@@ -13,7 +13,8 @@ This is the repository of a Brainlife App that notch filters MEG signals using t
     * an optional crosstalk compensation file in `.fif`,
     * an optional head position file in `.pos`,
     * an optional destination file in `.fif`,
-    * an optional event file in `.tsv`.
+    * an optional events file in `.tsv`,
+    * an optional channels file in `.tsv`.
 4) Input parameters are:
     * `param_freqs_specific_or_start`: `float`, optional, frequency to notch filter in Hz. Default is 50.
     * `param_freqs_end`: `float`, optional, end of the interval of frequencies to filter out in Hz. This value is excluded. Default is 251. 

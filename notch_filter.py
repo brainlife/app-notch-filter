@@ -7,7 +7,7 @@ import os
 import shutil
 import pandas as pd
 import warnings
-import helper
+from brainlife_apps_helper import helper
 
 
 def notch_filter(raw, param_freqs_specific_or_start, param_freqs_end, param_freqs_step, 

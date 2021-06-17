@@ -467,6 +467,15 @@ def main():
     # Save the dict_json_product in a json file
     with open('product.json', 'w') as outfile:
         json.dump(dict_json_product, outfile)
+        
+    # Save Ephys derivatives json file
+    # 1) Copy raw *_meg.json file
+    # 2) Update field: 
+    #    "SoftwareFilters": {
+    #        "<Filter1Name>": {"<Filter1Property1>": "<Filter1Setting1>"},
+    #     },... 
+
+
 
 
 if __name__ == '__main__':

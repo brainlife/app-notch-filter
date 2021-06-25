@@ -338,7 +338,7 @@ def _generate_report(data_file_before, raw_before_preprocessing, raw_after_prepr
                                 section='Parameters of the App', replace=False)
 
     # Save report
-    report.save('out_dir_report/report_filtering.html', overwrite=True)
+    report.save('out_dir_report/report_notch_filtering.html', overwrite=True)
 
 
 def main():

@@ -7,7 +7,7 @@ This is the repository of a Brainlife App that notch filters MEG signals using t
 
 1) Filter MEG signals
 2) Apply a notch filter 
-3) Input file is:
+3) Input file are:
     * a MEG file in `.fif` format,
     * an optional fine calibration file in `.dat`,
     * an optional crosstalk compensation file in `.fif`,

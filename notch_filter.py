@@ -4,7 +4,6 @@ import json
 import mne
 import numpy as np
 import os
-import shutil
 import pandas as pd
 import warnings
 from brainlife_apps_helper import helper
@@ -356,27 +355,10 @@ def main():
     raw = mne.io.read_raw_fif(data_file, allow_maxshield=True)
 
     # Read and save optional files
-    config, cross_talk_file, calibration_file, events_file, head_pos_file, channels_file, destination, meg_json_file = helper.read_optional_files(config, 'out_dir_notch_filter')
+    config, cross_talk_file, calibration_file, events_file, head_pos_file, channels_file, destination = helper.read_optional_files(config, 'out_dir_notch_filter')
     
     # Convert empty strings values to None
     config = helper.convert_parameters_to_None(config)
-
-    ## Update meg.json ##
-
-    # Extract or write meg.json
-    if meg_json_file is not None:
-        with open(meg_json_file) as meg_json:
-            meg_json = json.load(meg_json_file)
-    else:
-        meg_json = helper.create_meg_json(raw)
-
-    # Update the meg.json
-    meg_json["FilterType"] = f"band-stop {config['param_method']}"   
-
-    # Save the meg_json in a json file
-    with open('out_dir_notch_filter/meg.json', 'w') as outfile_meg:
-        json.dump(meg_json, outfile_meg)
-
 
     # Raise error if no start parameter and method is wrong 
     if config['param_freqs_specific_or_start'] is None and config['param_method'] != 'spectrum_fit':
